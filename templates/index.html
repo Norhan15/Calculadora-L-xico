@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Completa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .calculator {
+            width: 350px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .display {
+            width: 100%;
+            height: 70px;
+            background: #222;
+            color: #fff;
+            text-align: right;
+            padding: 20px;
+            font-size: 24px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            height: 60px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .number {
+            background: #e0e0e0;
+        }
+
+        .operator {
+            background: #f9a825;
+            color: white;
+        }
+
+        .operator:hover {
+            background: #f57c00;
+        }
+
+        .equal {
+            background: #4caf50;
+            color: white;
+            grid-column: span 2;
+        }
+
+        .equal:hover {
+            background: #388e3c;
+        }
+
+        .clear, .backspace {
+            background: #d32f2f;
+            color: white;
+        }
+
+        .clear:hover, .backspace:hover {
+            background: #c62828;
+        }
+
+        .info {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .info h3 {
+            margin-bottom: 10px;
+        }
+
+        .info ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .info ul li {
+            margin-bottom: 5px;
+        }
+
+        .tree {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .tree img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .memory {
+            margin-top: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <form method="POST">
+            <div class="display" id="display">{{ expression }}</div>
+            <div class="buttons">
+                <button type="button" class="number" onclick="appendToDisplay('7')">7</button>
+                <button type="button" class="number" onclick="appendToDisplay('8')">8</button>
+                <button type="button" class="number" onclick="appendToDisplay('9')">9</button>
+                <button type="button" class="operator" onclick="appendToDisplay('/')">/</button>
+
+                <button type="button" class="number" onclick="appendToDisplay('4')">4</button>
+                <button type="button" class="number" onclick="appendToDisplay('5')">5</button>
+                <button type="button" class="number" onclick="appendToDisplay('6')">6</button>
+                <button type="button" class="operator" onclick="appendToDisplay('*')">*</button>
+
+                <button type="button" class="number" onclick="appendToDisplay('1')">1</button>
+                <button type="button" class="number" onclick="appendToDisplay('2')">2</button>
+                <button type="button" class="number" onclick="appendToDisplay('3')">3</button>
+                <button type="button" class="operator" onclick="appendToDisplay('-')">-</button>
+
+                <button type="button" class="number" onclick="appendToDisplay('0')">0</button>
+                <button type="button" onclick="appendToDisplay('.')">.</button>
+                <button type="button" class="operator" onclick="appendToDisplay('+')">+</button>
+                <button type="button" class="operator" onclick="appendToDisplay('(')">(</button>
+                <button type="button" class="operator" onclick="appendToDisplay(')')">)</button>
+                <button type="button" class="backspace" onclick="deleteLast()">←</button>
+
+                <button type="button" class="clear" onclick="clearDisplay()">C</button>
+                <button type="submit" class="equal">=</button>
+                <button type="submit" name="ms_store" class="operator">MS</button>
+                <button type="button" class="operator" onclick="recallMemory()">MR</button>
+            </div>
+            <input type="hidden" name="expression" id="hidden-input" value="{{ expression }}">
+        </form>
+
+        {% if result %}
+        <div class="info">
+            <h3>Resultado:</h3>
+            <p><strong>{{ result }}</strong></p>
+        </div>
+        {% endif %}
+
+        {% if token_counts %}
+        <div class="info">
+            <h3>Detalles de los Tokens</h3>
+            <ul>
+                <li><strong>Total números:</strong> {{ token_counts.numbers }}</li>
+                <li><strong>Total operadores:</strong> {{ token_counts.operators }}</li>
+                <li><strong>Total paréntesis:</strong> {{ token_counts.parentheses }}</li>
+            </ul>
+        </div>
+        {% endif %}
+
+        {% if memory_value %}
+        <div class="memory">
+            <strong>Memoria (MS):</strong> {{ memory_value }}
+        </div>
+        {% endif %}
+    </div>
+
+    {% if tree_path %}
+    <div class="tree">
+        <h3>Árbol Sintáctico</h3>
+        <img src="{{ tree_path }}" alt="Árbol Sintáctico">
+    </div>
+    {% endif %}
+    
+    <script>
+        const display = document.getElementById('display');
+        const hiddenInput = document.getElementById('hidden-input');
+
+        function appendToDisplay(value) {
+            display.innerText += value;
+            hiddenInput.value = display.innerText;
+        }
+
+        function clearDisplay() {
+            display.innerText = '';
+            hiddenInput.value = '';
+        }
+
+        function deleteLast() {
+            display.innerText = display.innerText.slice(0, -1);
+            hiddenInput.value = display.innerText;
+        }
+
+        function recallMemory() {
+            display.innerText += '{{ memory_value }}';
+            hiddenInput.value = display.innerText;
+        }
+    </script>
+</body>
+</html>
