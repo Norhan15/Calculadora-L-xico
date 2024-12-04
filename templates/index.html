@@ -14,7 +14,7 @@
             margin: 0;
             padding: 20px;
         }
-
+    
         .calculator {
             width: 350px;
             background: #fff;
@@ -23,7 +23,7 @@
             box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
             margin-bottom: 20px;
         }
-
+    
         .display {
             width: 100%;
             height: 70px;
@@ -37,13 +37,13 @@
             box-sizing: border-box;
             overflow: hidden;
         }
-
+    
         .buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 10px;
         }
-
+    
         button {
             height: 60px;
             font-size: 18px;
@@ -52,77 +52,78 @@
             cursor: pointer;
             transition: background 0.3s;
         }
-
+    
         button:hover {
             opacity: 0.9;
         }
-
+    
         .number {
-            background: #e0e0e0;
+            background: #d1c4e9; /* Morado claro */
         }
-
+    
         .operator {
-            background: #f9a825;
+            background: #673ab7; /* Morado */
             color: white;
         }
-
+    
         .operator:hover {
-            background: #f57c00;
+            background: #512da8; /* Morado oscuro */
         }
-
+    
         .equal {
-            background: #4caf50;
+            background: #2196f3; /* Azul */
             color: white;
             grid-column: span 2;
         }
-
+    
         .equal:hover {
-            background: #388e3c;
+            background: #1976d2; /* Azul oscuro */
         }
-
+    
         .clear, .backspace {
             background: #d32f2f;
             color: white;
         }
-
+    
         .clear:hover, .backspace:hover {
             background: #c62828;
         }
-
+    
         .info {
             margin-top: 20px;
             text-align: left;
         }
-
+    
         .info h3 {
             margin-bottom: 10px;
         }
-
+    
         .info ul {
             list-style-type: none;
             padding: 0;
         }
-
+    
         .info ul li {
             margin-bottom: 5px;
         }
-
+    
         .tree {
             margin-top: 20px;
             text-align: center;
         }
-
+    
         .tree img {
             max-width: 100%;
             border: 1px solid #ddd;
             border-radius: 5px;
         }
-
+    
         .memory {
             margin-top: 10px;
             font-size: 16px;
         }
     </style>
+    
 </head>
 <body>
     <div class="calculator">

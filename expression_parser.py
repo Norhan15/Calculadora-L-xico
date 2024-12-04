@@ -1,3 +1,4 @@
+import os
 import re
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -42,7 +43,13 @@ def draw_syntax_tree(expression):
     plt.figure(figsize=(12, 8))
     pos = nx.spring_layout(G)
     nx.draw(G, pos, with_labels=True, arrows=True, node_size=3000, node_color="lightblue", font_size=10, font_weight="bold")
+
     file_name = "static/syntax_tree.png"
+    directory = os.path.dirname(file_name)
+
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
     plt.savefig(file_name)
     plt.close()
     return file_name
